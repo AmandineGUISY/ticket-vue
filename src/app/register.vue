@@ -38,12 +38,18 @@
 
     watch(password, checkPasswordStrength);
 
-    const handleSubmit = () => {
-        if (password.value !== confirmPassword.value) {
-            alert("Les mots de passe ne correspondent pas !");
-            return;
-        }
+    const isValidEmail = (email: string) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
     };
+
+    const isSubmitDisabled = computed(() => { // disable the submit button if the form is not valid 
+        return password.value !== confirmPassword.value || passwordStrength.value < 80 || !isValidEmail(email.value) || !email.value || !password.value || !confirmPassword.value;
+    });
+
+    const handleSubmit = () => {
+        alert("Inscription réussie !");
+    }
 
 </script>
 
@@ -77,7 +83,7 @@
                                 <div class="mb-3 mt-2">
                                     <small class="form-text text-muted"></small>
                                 </div>
-                                <button type="submit" class="btn btn-primary w-100">S'inscrire</button>
+                                <button type="submit" class="btn btn-primary w-100" :disabled="isSubmitDisabled">S'inscrire</button>
                             </form>
                         </div>
                     </div>
