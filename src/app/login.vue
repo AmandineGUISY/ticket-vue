@@ -13,18 +13,18 @@
     });
  
     const handleSubmit = async () => {
-        const formData = {
-            username: email.value,
-            password: password.value,
-        };
+
+        const formDataAsUrlEncoded = new URLSearchParams();
+        formDataAsUrlEncoded.append('username', email.value);
+        formDataAsUrlEncoded.append('password', password.value);
 
         try {
             const response = await fetch("http://127.0.0.1:5000/api/auth/token", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json",
+                    "Content-Type": "application/x-www-form-urlencoded",
                 },
-                body: JSON.stringify(formData),
+                body: formDataAsUrlEncoded,
             });
     
             if (!response.ok) {
