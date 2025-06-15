@@ -1,5 +1,7 @@
 <script setup lang="ts">
     import { ref, computed, watch } from 'vue';
+    import { checkPasswordStrength, isValidEmail } from '../utils/formCheck.ts';
+
 
     const email = ref('');
     const password = ref('');
@@ -9,42 +11,20 @@
     const strenghtText = ref('');
     const strenghtColor = ref('bg-danger');
 
-    const checkPasswordStrength = () => {
-        let strength = 0;
-        const value = password.value;
-
-        if (value.length >= 8) strength++;
-        if (value.match(/[a-z]/)) strength++;
-        if (value.match(/[A-Z]/)) strength++;
-        if (value.match(/[0-9]/)) strength++;
-        if (value.match(/[^a-zA-Z0-9]/)) strength++;
-
-        passwordStrength.value = (strength/5) * 100;
-
-        if (passwordStrength.value > 80) {
-            strenghtText.value = 'Parfait';
-            strenghtColor.value = 'bg-success';
-        } else if (passwordStrength.value >= 80) {
-            strenghtText.value = 'Fort';
-            strenghtColor.value = 'bg-success';
-        } else if (passwordStrength.value >= 40) {
-            strenghtText.value = 'Moyen';
-            strenghtColor.value = 'bg-warning';
-        } else {
-            strenghtText.value = 'Faible';
-            strenghtColor.value = 'bg-danger';
-        }
-    }
-
-    watch(password, checkPasswordStrength);
-
-    const isValidEmail = (email: string) => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
+    const updatePasswordStrength = () => {
+        const { score, label, colorClass } = checkPasswordStrength(password.value);
+        passwordStrength.value = score;
+        strenghtText.value = label;
+        strenghtColor.value = colorClass;
     };
 
-    const isSubmitDisabled = computed(() => { // disable the submit button if the form is not valid 
-        return password.value !== confirmPassword.value || passwordStrength.value < 80 || !isValidEmail(email.value) || !email.value || !password.value || !confirmPassword.value;
+    watch(password, updatePasswordStrength);
+
+    const isSubmitDisabled = computed(() => {
+        return password.value !== confirmPassword.value ||
+            passwordStrength.value < 80 ||
+            !isValidEmail(email.value) ||
+            !email.value || !password.value || !confirmPassword.value;
     });
 
     const handleSubmit = () => {
