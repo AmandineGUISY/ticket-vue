@@ -1,5 +1,6 @@
 <script setup lang="ts">
     import { ref, computed, watch } from 'vue';
+    import { useRouter } from 'vue-router';
     import { checkPasswordStrength, isValidEmail } from '../utils/formCheck.ts';
 
     const name = ref('');
@@ -12,6 +13,8 @@
     const strenghtText = ref('');
     const strenghtColor = ref('bg-danger');
     
+    const router = useRouter();
+
     const updatePasswordStrength = () => {
         const { score, label, colorClass } = checkPasswordStrength(password.value);
         passwordStrength.value = score;
@@ -54,7 +57,8 @@
     
             const data = await response.json();
             console.log("Réponse de l'API :", data);
-            alert("Inscription réussie !");
+            router.push('/login');
+
         } catch (err) {
             console.error("Erreur lors de la requête :", err);
             alert("Une erreur est survenue. Veuillez réessayer.");
