@@ -108,6 +108,9 @@
                                 <button type="submit" class="btn btn-primary w-100" :disabled="isSubmitDisabled">S'inscrire</button>
                             </form>
                         </div>
+                        <div class="card-footer text-center">
+                            <p class="mb-0">Déjà inscrit ? <a href="/login">Se connecter</a></p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -132,6 +135,10 @@
 .card {
     border: none;
     box-shadow: 6px 4px 6px #2A60AB;
+}
+
+a {
+    text-decoration: none;
 }
 
 </style>
