@@ -2,7 +2,8 @@
     import { ref, computed, watch } from 'vue';
     import { checkPasswordStrength, isValidEmail } from '../utils/formCheck.ts';
 
-
+    const name = ref('');
+    const surname = ref('');
     const email = ref('');
     const password = ref('');
     const confirmPassword = ref('');
@@ -10,7 +11,7 @@
     const passwordStrength = ref(0);
     const strenghtText = ref('');
     const strenghtColor = ref('bg-danger');
-
+    
     const updatePasswordStrength = () => {
         const { score, label, colorClass } = checkPasswordStrength(password.value);
         passwordStrength.value = score;
@@ -24,11 +25,40 @@
         return password.value !== confirmPassword.value ||
             passwordStrength.value < 80 ||
             !isValidEmail(email.value) ||
-            !email.value || !password.value || !confirmPassword.value;
+            !email.value || !password.value || !confirmPassword.value || !name.value || !surname.value;
     });
 
-    const handleSubmit = () => {
-        alert("Inscription réussie !");
+    const handleSubmit = async () => {
+        const formData = {
+            email: email.value,
+            password: password.value,
+            nom: name.value,
+            prenom: surname.value,
+        };
+    
+        try {
+            const response = await fetch("http://127.0.0.1:5000/api/auth/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData),
+            });
+    
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error("Erreur de l'API:", errorData);
+                alert(`Erreur d'inscription: ${errorData.detail || response.statusText}`);
+                return;
+            }
+    
+            const data = await response.json();
+            console.log("Réponse de l'API :", data);
+            alert("Inscription réussie !");
+        } catch (err) {
+            console.error("Erreur lors de la requête :", err);
+            alert("Une erreur est survenue. Veuillez réessayer.");
+        }
     }
 
 </script>
@@ -44,6 +74,14 @@
                         </div>
                         <div class="card-body">
                             <form @submit.prevent="handleSubmit">
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Prénom</label>
+                                    <input type="text" class="form-control" id="name" v-model="name" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="surname" class="form-label">Nom</label>
+                                    <input type="text" class="form-control" id="surname" v-model="surname" required>
+                                </div>
                                 <div class="mb-3">
                                     <label for="email" class="form-label">Adresse Email</label>
                                     <input type="email" class="form-control" id="email" v-model="email" required>
