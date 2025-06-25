@@ -3,6 +3,7 @@
     import { useRouter } from 'vue-router';
     import { checkPasswordStrength, isValidEmail } from '../utils/formCheck.ts';
     import axios from 'axios';
+    import { useToast } from 'vue-toastification';
 
     const name = ref('');
     const surname = ref('');
@@ -48,7 +49,7 @@
             const errorData = (err as any).response?.data;
             const errorMessage = errorData?.detail || "Une erreur est survenue lors de l\'inscription.";
             console.error("Erreur de l'API:", errorData);
-            alert(`Erreur d'inscription: ${errorMessage}`);
+            useToast().error(errorMessage);
         }
     }
 

@@ -1,6 +1,8 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { useToast } from 'vue-toastification';
+import axios from 'axios';
 
 const router = useRouter();
 const tasks = ref([]);
@@ -12,25 +14,21 @@ onMounted(async () => {
     const token = localStorage.getItem('access_token');
     if (!token) {
         router.push('/login');
+        useToast().error("Vous devez être connecté pour accéder à cette page.");
         return;
     }
 
     try {
-        const response = await fetch("http://127.0.0.1:5000/api/tasks", {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                "Content-Type": "application/json",
+        isLoading.value = true;
+        const response = await axios.get("http://127.0.0.1:5000/api/tasks", {
+            headers: { 
+                'Authorization': `Bearer ${token}`
             }
         });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error('Erreur lors de la récupération des tâches');
-        }
-        tasks.value = await response.json();
+        tasks.value = await response.data;
     } catch (err) {
         console.error("Erreur lors de la récupération des tâches :", err);
-        error.value = 'Une erreur est survenue lors de la récupération des tâches.';
+        useToast().error("Impossible de charger les tâches. Veuillez réessayer plus tard.");
     } finally {
         isLoading.value = false;
     }

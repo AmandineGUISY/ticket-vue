@@ -2,6 +2,8 @@
     import { ref, computed } from 'vue';
     import { useRouter } from 'vue-router';
     import { isValidEmail } from '../utils/formCheck.ts';
+    import { useToast } from 'vue-toastification';
+    import axios from 'axios';
 
     const email = ref('');
     const password = ref('');
@@ -19,27 +21,17 @@
         formDataAsUrlEncoded.append('password', password.value);
 
         try {
-            const response = await fetch("http://127.0.0.1:5000/api/auth/token", {
-                method: "POST",
+            const response = await axios.post("http://127.0.0.1:5000/api/auth/token", formDataAsUrlEncoded, {
                 headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
+                    'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: formDataAsUrlEncoded,
-            });
-    
-            if (!response.ok) {
-                const errorData = await response.json();
-                console.error("Erreur de l'API:", errorData);
-                alert(`Erreur de login: ${errorData.detail || response.statusText}`);
-                return;
-            }
-    
-            const data = await response.json();
-            console.log("Réponse de l'API :", data);
+            }); 
+
+            const data = response.data;
             router.push('/crm');
         } catch (err) {
             console.error("Erreur lors de la requête :", err);
-            alert("Une erreur est survenue. Veuillez réessayer.");
+            useToast().error("Erreur de connexion. Veuillez vérifier vos identifiants.");
         }
     }
 </script>
