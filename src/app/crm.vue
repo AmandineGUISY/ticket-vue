@@ -9,11 +9,12 @@ const tasks = ref([]);
 const newTask = ref('');
 const isLoading = ref(false);
 const error = ref(null);
+const isOpen = ref(false);
 
 onMounted(async () => {
     const token = localStorage.getItem('access_token');
     if (!token) {
-        router.push('/login');
+        //router.push('/login');
         useToast().error("Vous devez être connecté pour accéder à cette page.");
         return;
     }
@@ -45,7 +46,31 @@ onMounted(async () => {
                     <div class="card mt-5">
                         <div class="tasks card-header bg-dark text-white">
                             <h3 class="mb-0">Liste des Tâches</h3>
-                            <button class="btn btn-success" @click="">+ Ajouter une tâche</button>
+                            <button class="btn btn-success" @click="isOpen = true">+ Ajouter une tâche</button>
+                        </div>
+                        <div v-if="isOpen" class="form-backdrop">
+                            <div class="card fixed-form-container">
+                                <div class="card-body">
+                                    <form @submit.prevent="addTask" class="mb-3">
+                                        <div class="mb-3">
+                                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                                <h3>Ajouter une tâche</h3>
+                                                <button type="button" class="btn-close" aria-label="Close" @click="isOpen = false"></button>
+                                            </div>
+                                            <label for="taskTitle" class="form-label">Titre de la tâche</label>
+                                            <input type="text" v-model="newTask.title" id="taskTitle" class="form-control" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="taskDescription" class="form-label">Description</label>
+                                            <textarea v-model="newTask.description" id="taskDescription" class="form-control"></textarea>
+                                        </div>
+                                        <div class="d-flex justify-content-end gap-2">
+                                            <button type="submit" class="btn btn-primary">Ajouter</button>
+                                            <button type="button" class="btn btn-danger" @click="isOpen = false">Annuler</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                         <div class="card-body">
                             <div v-if="isLoading" class="text-center">
@@ -62,6 +87,8 @@ onMounted(async () => {
                                     </div>
                                     <p class="mb-1">{{ task.description }}</p>
                                     <small class="text-muted">Créé le {{ new Date(task.created_at).toLocaleDateString() }}</small>
+                                    <button class="btn btn-primary btn-sm mt-2" @click="">Modifier</button>
+                                    <button class="btn btn-danger btn-sm mt-2" @click="">Supprimer</button>
                                 </li>
                             </ul>
                             <div v-if="tasks.length === 0" class="text-center mt-3">
@@ -97,5 +124,25 @@ onMounted(async () => {
 .card {
     border: none;
     min-height: 300px;
+}
+.form-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.fixed-form-container {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    max-width: 500px;
+    width: 90%;
+    min-height: unset;
 }
 </style>
