@@ -63,7 +63,7 @@
                                     <label for="password" class="form-label">Mot de passe</label>
                                     <input type="password" class="form-control" id="password" v-model="password" required>
                                 </div>
-                                <button type="submit" class="btn btn-primary w-100" :disabled="isSubmitDisabled">S'inscrire</button>
+                                <button type="submit" class="btn btn-primary w-100" :disabled="isSubmitDisabled">Se connecter</button>
                             </form>
                         </div>
                         <div class="card-footer text-center">

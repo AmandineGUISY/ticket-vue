@@ -11,12 +11,12 @@ const error = ref(null);
 onMounted(async () => {
     const token = localStorage.getItem('access_token');
     if (!token) {
-        push('/login');
+        router.push('/login');
         return;
     }
 
     try {
-        const response = await fetch("http://http://127.0.0.1:5000/api/tasks", {
+        const response = await fetch("http://127.0.0.1:5000/api/tasks", {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 "Content-Type": "application/json",
@@ -28,11 +28,9 @@ onMounted(async () => {
             throw new Error('Erreur lors de la récupération des tâches');
         }
         tasks.value = await response.json();
-        isLoading.value = false;
     } catch (err) {
         console.error("Erreur lors de la récupération des tâches :", err);
         error.value = 'Une erreur est survenue lors de la récupération des tâches.';
-        isLoading.value = false;
     } finally {
         isLoading.value = false;
     }

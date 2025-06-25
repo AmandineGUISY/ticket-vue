@@ -41,14 +41,14 @@
         };
     
         try {
-            const response = await axios.post("http://127.0.0.1:5000/api/auth/register", formData);
-            router.push('/login');
+            await axios.post("http://127.0.0.1:5000/api/auth/register", formData);
+            router.push('/crm');
 
         } catch (err) {
             const errorData = (err as any).response?.data;
             const errorMessage = errorData?.detail || "Une erreur est survenue lors de l\'inscription.";
-            console.error("Erreur lors de la requête :", err);
-            alert("Une erreur est survenue. Veuillez réessayer.");
+            console.error("Erreur de l'API:", errorData);
+            alert(`Erreur d'inscription: ${errorMessage}`);
         }
     }
 
