@@ -27,6 +27,7 @@
 
 .
 <script setup>
+import axios from 'axios';
 import { ref, defineProps, defineEmits } from 'vue';
 import { useToast } from 'vue-toastification';
 
@@ -53,7 +54,7 @@ const closeForm = () => {
     newTask.value.created_at = '';
 };
 
-const addTask = () => {
+const addTask = async () => {
     if (newTask.value.title.trim() === '') {
         toast.error('Le titre de la tâche est requis.');
         return;
@@ -62,11 +63,25 @@ const addTask = () => {
     newTask.value.description = newTask.value.description.trim() || '';
     newTask.value.created_at = new Date().toISOString();
 
-    emit('task-added', { ...newTask.value });
+    const taskData = {
+        title: newTask.value.title,
+        labels: [],
+        description: newTask.value.description,
+    };
 
-    toast.success('Tâche ajoutée avec succès !');
-
-    closeForm();
+    try {
+        reponse = await axios.post('/api/tasks/create_task', taskData, {
+            headers: {
+                'Content-Type': 'application/json',
+            }, 
+        });
+        emit('task-added', { ...newTask.value });
+        toast.success('Tâche ajoutée avec succès !');
+        closeForm();
+    } catch (error) {
+        toast.error('Erreur lors de l\'ajout de la tâche. Veuillez réessayer.');
+        return;
+    }
 };
 </script>
 

@@ -66,7 +66,11 @@ const handleTaskAdded = (addedTask) => {
                             <ul class="list-group">
                                 <li v-for="task in tasks" :key="task.id" class="list-group-item">
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <span>{{ task.title }}</span>
+                                        <div class="gap-2 d-flex">
+                                            <span>{{ task.title }}</span>
+                                            <span class="badge bg-secondary">{{ task.status }}</span>
+                                        </div>
+                                        
                                         <div class="gap-2 d-flex">
                                             <button class="btn btn-outline-primary btn-sm mt-2" @click=""><font-awesome-icon :icon="faEye" /></button>
                                             <button class="btn btn-outline-warning btn-sm mt-2" @click=""><font-awesome-icon :icon="faPenToSquare" /></button>
