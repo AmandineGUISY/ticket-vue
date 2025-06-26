@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
 import axios from 'axios';
 import AddTasks from '../components/app/crm/addTasks.vue';
+import ShowDescription from '../components/app/crm/showDescription.vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faEye, faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
 
@@ -13,6 +14,9 @@ const tasks = ref([]);
 const isLoading = ref(false);
 const error = ref(null);
 const isOpen = ref(false);
+const showDescription = ref(false);
+const currentTaskDescription = ref('');
+const idDescription = ref('');
 
 onMounted(async () => {
     const token = localStorage.getItem('access_token');
@@ -43,6 +47,12 @@ const handleTaskAdded = (addedTask) => {
     tasks.value.push(addedTask);
 };
 
+const openDescriptionModal = (description, idTask) => {
+    currentTaskDescription.value = description;
+    showDescription.value = !showDescription.value;
+    idDescription.value = idTask;
+};
+
 </script>
 
 <template>
@@ -51,11 +61,12 @@ const handleTaskAdded = (addedTask) => {
             <div class="row justify-content-center">
                 <div class="col-10 col-md-8">
                     <div class="card mt-5">
-                        <div class="tasks card-header bg-dark text-white">
-                            <h3 class="mb-0">Liste des Tâches</h3>
+                        <div class="tasks card-header bg-dark text-white p-3 d-flex justify-content-between align-items-center">
+                            <h1 class="mb-0">Liste des Tâches</h1>
                             <button class="btn btn-success" @click="isOpen = true">+ Ajouter une tâche</button>
                         </div>
-                        <AddTasks v-model:is-open="isOpen" @task-added="handleTaskAdded"></AddTasks>
+                        <AddTasks v-model:is-open="isOpen" @task-added="handleTaskAdded" /> 
+                        
                         <div class="card-body">
                             <div v-if="isLoading" class="text-center">
                                 <p>Chargement des tâches...</p>
@@ -68,17 +79,19 @@ const handleTaskAdded = (addedTask) => {
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div class="gap-2 d-flex">
                                             <span>{{ task.title }}</span>
-                                            <span v-if="task.status === 'Pending'" class="badge bg-warning">En cours</span>
+                                            <span v-if="task.status === 'Pending'" class="badge bg-warning">En cours</span> 
                                             <span v-else-if="task.status === 'Completed'" class="badge bg-success">Complété</span>
                                         </div>
                                         
-                                        <div class="gap-2 d-flex">
-                                            <button class="btn btn-outline-primary btn-sm mt-2" @click=""><font-awesome-icon :icon="faEye" /></button>
+                                        <div class="gap-2 d-flex"> 
+                                            <button v-if="task.description" class="btn btn-outline-primary btn-sm mt-2" @click="openDescriptionModal( task.description, task.id )"> <font-awesome-icon :icon="faEye" /></button>
                                             <button class="btn btn-outline-warning btn-sm mt-2" @click=""><font-awesome-icon :icon="faPenToSquare" /></button>
                                             <button class="btn btn-outline-danger btn-sm mt-2" @click=""><font-awesome-icon :icon="faTrash" /></button>
                                         </div>
                                     </div>
                                     <small class="text-muted">Créé le {{ new Date(task.created_at).toLocaleDateString() }}</small>
+                                    <hr v-if="showDescription && task.id === idDescription" class="x-divider my-3">
+                                    <ShowDescription v-if="task.id === idDescription" v-model:show-description="showDescription" :description-task="currentTaskDescription" />
                                 </li>
                             </ul>
                             <div v-if="tasks.length === 0 && !isLoading && !error" class="text-center mt-3">

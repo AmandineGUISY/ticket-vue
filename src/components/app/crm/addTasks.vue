@@ -45,7 +45,8 @@ const newTask = ref({
     title: '',
     description: '',
     created_at: '',
-    status: 'Pending'
+    status: 'Pending',
+    id: ''
 });
 
 const closeForm = () => {
@@ -63,6 +64,7 @@ const addTask = async () => {
 
     newTask.value.description = newTask.value.description.trim() || '';
     newTask.value.created_at = new Date().toISOString();
+    newTask.value.id = crypto.randomUUID();
 
     const taskData = {
         title: newTask.value.title,
