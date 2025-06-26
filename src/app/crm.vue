@@ -8,6 +8,7 @@ import axios from 'axios';
 import AddTasks from '../components/app/crm/addTasks.vue';
 import ShowDescription from '../components/app/crm/showDescription.vue';
 import updateTasks from '@/components/app/crm/updateTasks.vue';
+import handleLabels from '@/components/app/crm/labels/handleLabels.vue';
 
 const router = useRouter();
 const toast = useToast();
@@ -83,11 +84,13 @@ const deleteTask = (id) => {
                     <div class="card mt-5">
                         <div class="tasks card-header bg-dark text-white p-3 d-flex justify-content-between align-items-center">
                             <h1 class="mb-0">Liste des Tâches</h1>
-                            <button class="btn btn-success" @click="isOpen = true">+ Ajouter une tâche</button>
+                            <div class="d-flex gap-3">
+                                <handleLabels />
+                                <button class="btn btn-success" @click="isOpen = true">+ Ajouter une tâche</button>
+                            </div>
                         </div>
                         <AddTasks v-model:is-open="isOpen" @task-added="handleTaskAdded" />
 
-                        
                         <div class="card-body">
                             <div v-if="isLoading" class="text-center">
                                 <p>Chargement des tâches...</p>
