@@ -2,11 +2,12 @@
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faEye, faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import AddTasks from '../components/app/crm/addTasks.vue';
 import ShowDescription from '../components/app/crm/showDescription.vue';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faEye, faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
+import updateTasks from '@/components/app/crm/updateTasks.vue';
 
 const router = useRouter();
 const toast = useToast();
@@ -53,6 +54,25 @@ const openDescriptionModal = (description, idTask) => {
     idDescription.value = idTask;
 };
 
+const deleteTask = (id) => {
+    // try {
+    //     axios.delete(`http://127.0.0.1:5000/api/tasks/${id}`)
+    //         .then(response => {
+    //             tasks.value = tasks.value.filter(task => task.id !== id);
+    //             toast.success("Tâche supprimée avec succès.");
+    //         })
+    //         .catch(error => {
+    //             console.error("Erreur lors de la suppression de la tâche :", error);
+    //             toast.error("Impossible de supprimer la tâche. Veuillez réessayer plus tard.");
+    //         });
+    // } catch (err) {
+    //     console.error("Erreur lors de la suppression de la tâche :", err);
+    //     toast.error("Impossible de supprimer la tâche. Veuillez réessayer plus tard.");
+    // }
+    tasks.value = tasks.value.filter(task => task.id !== id);
+    toast.success("Tâche supprimée avec succès !");
+};
+
 </script>
 
 <template>
@@ -65,7 +85,8 @@ const openDescriptionModal = (description, idTask) => {
                             <h1 class="mb-0">Liste des Tâches</h1>
                             <button class="btn btn-success" @click="isOpen = true">+ Ajouter une tâche</button>
                         </div>
-                        <AddTasks v-model:is-open="isOpen" @task-added="handleTaskAdded" /> 
+                        <AddTasks v-model:is-open="isOpen" @task-added="handleTaskAdded" />
+
                         
                         <div class="card-body">
                             <div v-if="isLoading" class="text-center">
@@ -86,12 +107,14 @@ const openDescriptionModal = (description, idTask) => {
                                         <div class="gap-2 d-flex"> 
                                             <button v-if="task.description" class="btn btn-outline-primary btn-sm mt-2" @click="openDescriptionModal( task.description, task.id )"> <font-awesome-icon :icon="faEye" /></button>
                                             <button class="btn btn-outline-warning btn-sm mt-2" @click=""><font-awesome-icon :icon="faPenToSquare" /></button>
-                                            <button class="btn btn-outline-danger btn-sm mt-2" @click=""><font-awesome-icon :icon="faTrash" /></button>
+                                            <button class="btn btn-outline-danger btn-sm mt-2" @click="deleteTask(task.id)"><font-awesome-icon :icon="faTrash" /></button>
                                         </div>
                                     </div>
                                     <small class="text-muted">Créé le {{ new Date(task.created_at).toLocaleDateString() }}</small>
-                                    <hr v-if="showDescription && task.id === idDescription" class="x-divider my-3">
-                                    <ShowDescription v-if="task.id === idDescription" v-model:show-description="showDescription" :description-task="currentTaskDescription" />
+                                    <div>
+                                        <hr v-if="showDescription && task.id === idDescription" class="x-divider my-3">
+                                        <ShowDescription v-if="task.id === idDescription" v-model:show-description="showDescription" :description-task="currentTaskDescription" />
+                                    </div>
                                 </li>
                             </ul>
                             <div v-if="tasks.length === 0 && !isLoading && !error" class="text-center mt-3">
