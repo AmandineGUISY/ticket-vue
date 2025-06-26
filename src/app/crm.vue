@@ -68,7 +68,8 @@ const handleTaskAdded = (addedTask) => {
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div class="gap-2 d-flex">
                                             <span>{{ task.title }}</span>
-                                            <span class="badge bg-secondary">{{ task.status }}</span>
+                                            <span v-if="task.status === 'Pending'" class="badge bg-warning">En cours</span>
+                                            <span v-else-if="task.status === 'Completed'" class="badge bg-success">Complété</span>
                                         </div>
                                         
                                         <div class="gap-2 d-flex">
@@ -76,7 +77,6 @@ const handleTaskAdded = (addedTask) => {
                                             <button class="btn btn-outline-warning btn-sm mt-2" @click=""><font-awesome-icon :icon="faPenToSquare" /></button>
                                             <button class="btn btn-outline-danger btn-sm mt-2" @click=""><font-awesome-icon :icon="faTrash" /></button>
                                         </div>
-                                        <!-- <span class="badge bg-secondary">{{ task.status }}</span> -->
                                     </div>
                                     <small class="text-muted">Créé le {{ new Date(task.created_at).toLocaleDateString() }}</small>
                                 </li>

@@ -45,6 +45,7 @@ const newTask = ref({
     title: '',
     description: '',
     created_at: '',
+    status: 'Pending'
 });
 
 const closeForm = () => {
@@ -69,19 +70,23 @@ const addTask = async () => {
         description: newTask.value.description,
     };
 
-    try {
-        reponse = await axios.post('/api/tasks/create_task', taskData, {
-            headers: {
-                'Content-Type': 'application/json',
-            }, 
-        });
-        emit('task-added', { ...newTask.value });
-        toast.success('Tâche ajoutée avec succès !');
-        closeForm();
-    } catch (error) {
-        toast.error('Erreur lors de l\'ajout de la tâche. Veuillez réessayer.');
-        return;
-    }
+    // try {
+    //     reponse = await axios.post('/api/tasks/create_task', taskData, {
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //         }, 
+    //     });
+    //     emit('task-added', { ...newTask.value });
+    //     toast.success('Tâche ajoutée avec succès !');
+    //     closeForm();
+    // } catch (error) {
+    //     toast.error('Erreur lors de l\'ajout de la tâche. Veuillez réessayer.');
+    //     return;
+    // }
+
+    emit('task-added', { ...newTask.value });
+    toast.success('Tâche ajoutée avec succès !');
+    closeForm();
 };
 </script>
 
