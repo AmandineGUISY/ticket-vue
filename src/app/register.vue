@@ -16,6 +16,7 @@
     const strenghtColor = ref('bg-danger');
     
     const router = useRouter();
+    const toast = useToast();
 
     const updatePasswordStrength = () => {
         const { score, label, colorClass } = checkPasswordStrength(password.value);
@@ -48,8 +49,7 @@
         } catch (err) {
             const errorData = (err as any).response?.data;
             const errorMessage = errorData?.detail || "Une erreur est survenue lors de l\'inscription.";
-            console.error("Erreur de l'API:", errorData);
-            useToast().error(errorMessage);
+            toast.error(errorMessage);
         }
     }
 

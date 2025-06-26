@@ -5,6 +5,7 @@ import { useToast } from 'vue-toastification';
 import axios from 'axios';
 
 const router = useRouter();
+const toast = useToast();
 const tasks = ref([]);
 const newTask = ref('');
 const isLoading = ref(false);
@@ -15,7 +16,7 @@ onMounted(async () => {
     const token = localStorage.getItem('access_token');
     if (!token) {
         //router.push('/login');
-        useToast().error("Vous devez être connecté pour accéder à cette page.");
+        toast.error("Vous devez être connecté pour accéder à cette page.");
         return;
     }
 
@@ -29,7 +30,7 @@ onMounted(async () => {
         tasks.value = await response.data;
     } catch (err) {
         console.error("Erreur lors de la récupération des tâches :", err);
-        useToast().error("Impossible de charger les tâches. Veuillez réessayer plus tard.");
+        toast.error("Impossible de charger les tâches. Veuillez réessayer plus tard.");
     } finally {
         isLoading.value = false;
     }

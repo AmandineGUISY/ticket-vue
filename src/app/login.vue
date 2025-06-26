@@ -8,6 +8,7 @@
     const email = ref('');
     const password = ref('');
 
+    const toast = useToast();
     const router = useRouter();
 
     const isSubmitDisabled = computed(() => {
@@ -25,13 +26,37 @@
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-            }); 
+            }
+            ); 
 
-            const data = response.data;
-            router.push('/crm');
+            if (response.data && response.data.access_token) {
+
+                localStorage.setItem('authToken', response.data.access_token);
+                toast.success("Connexion réussie !");
+                router.push('/crm');
+
+            } else {
+
+                const errorMessage = response.data.message || "Identifiants invalides. Veuillez réessayer.";
+                toast.error(errorMessage);
+            }
         } catch (err) {
-            console.error("Erreur lors de la requête :", err);
-            useToast().error("Erreur de connexion. Veuillez vérifier vos identifiants.");
+
+            let errorMessage = "Une erreur inattendue est survenue.";
+
+            if (axios.isAxiosError(err)) {
+                if (err.response) {
+                    errorMessage = err.response.data?.detail || err.response.data?.message || `Erreur du serveur: ${err.response.status}`;
+                    if (err.response.status === 401) {
+                        errorMessage = "Identifiants incorrects. Veuillez vérifier votre email et mot de passe.";
+                    }
+                } else if (err.request) {
+                    errorMessage = "Pas de réponse du serveur. Vérifiez votre connexion internet ou l'adresse du serveur.";
+                } else {
+                    errorMessage = err.message;
+                }
+            }
+            toast.error(errorMessage);
         }
     }
 </script>
