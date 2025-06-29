@@ -44,7 +44,7 @@
     
         try {
             await axios.post("http://127.0.0.1:5000/api/auth/register", formData);
-            router.push('/crm');
+            router.push('/login');
 
         } catch (err) {
             const errorData = (err as any).response?.data;

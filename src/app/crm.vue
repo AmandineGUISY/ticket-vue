@@ -23,7 +23,7 @@ const idDescription = ref('');
 onMounted(async () => {
     const token = localStorage.getItem('access_token');
     if (!token) {
-        //router.push('/login');
+        router.push('/login');
         toast.error("Vous devez être connecté pour accéder à cette page.");
         return;
     }
@@ -37,7 +37,6 @@ onMounted(async () => {
         });
         tasks.value = await response.data;
     } catch (err) {
-        console.error("Erreur lors de la récupération des tâches :", err);
         toast.error("Impossible de charger les tâches. Veuillez réessayer plus tard.");
     } finally {
         isLoading.value = false;
@@ -55,23 +54,25 @@ const openDescriptionModal = (description, idTask) => {
     idDescription.value = idTask;
 };
 
-const deleteTask = (id) => {
-    // try {
-    //     axios.delete(`http://127.0.0.1:5000/api/tasks/${id}`)
-    //         .then(response => {
-    //             tasks.value = tasks.value.filter(task => task.id !== id);
-    //             toast.success("Tâche supprimée avec succès.");
-    //         })
-    //         .catch(error => {
-    //             console.error("Erreur lors de la suppression de la tâche :", error);
-    //             toast.error("Impossible de supprimer la tâche. Veuillez réessayer plus tard.");
-    //         });
-    // } catch (err) {
-    //     console.error("Erreur lors de la suppression de la tâche :", err);
-    //     toast.error("Impossible de supprimer la tâche. Veuillez réessayer plus tard.");
-    // }
-    tasks.value = tasks.value.filter(task => task.id !== id);
-    toast.success("Tâche supprimée avec succès !");
+const deleteTask = async (id) => {
+    try {
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            toast.error("Vous devez être authentifié pour effectuer cette action.");
+            router.push('/login');
+            return;
+        }
+        await axios.delete(`http://127.0.0.1:5000/api/tasks/${id}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        tasks.value = tasks.value.filter(task => task.id !== id);
+        toast.success("Tâche supprimée avec succès !");
+    } catch (err) {
+        console.error("Erreur lors de la suppression de la tâche :", err);
+        toast.error("Impossible de supprimer la tâche. Veuillez réessayer plus tard.");
+    }
 };
 
 </script>
