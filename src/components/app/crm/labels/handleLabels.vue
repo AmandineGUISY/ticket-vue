@@ -16,7 +16,16 @@ const newLabel = ref({
     id: ''
 });
 
-const colors = ['Primary', 'Secondary', 'Success', 'Danger', 'Warning', 'Info', 'Light', 'Dark'];
+const colors = [
+    { name: 'Bleu', value: 'Primary' },
+    { name: 'Rouge', value: 'Danger' },
+    { name: 'Vert', value: 'Success' },
+    { name: 'Jaune', value: 'Warning' },
+    { name: 'Cyan', value: 'Info' },
+    { name: 'Clair', value: 'Light' },
+    { name: 'Gris', value: 'Secondary' },
+    { name: 'Sombre', value: 'Dark' }
+];
 
 watch(isOpen, (newValue) => {
     if (newValue) {
@@ -118,7 +127,7 @@ const deleteLabel = async (labelId) => {
                     <div class="input-group">
                         <input type="text" class="form-control" placeholder="Nom du label" v-model="newLabel.title">
                         <select v-model="newLabel.color" class="form-select" style="max-width: 120px;">
-                            <option v-for="color in colors" :key="color" :value="color">{{ color }}</option>
+                            <option v-for="color in colors" :key="color.value" :value="color.value">{{ color.name }}</option>
                         </select>
                         <input v-model="newLabel.id" type="number">
                         <button type="submit" class="btn btn-success">
