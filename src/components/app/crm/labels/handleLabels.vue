@@ -10,6 +10,14 @@ const labels = ref([]);
 const isOpen = ref(false);
 const isCreatingLabel = ref(false);
 
+const newLabel = ref({
+    title: '',
+    color: '',
+    id: ''
+});
+
+const colors = ['Primary', 'Secondary', 'Success', 'Danger', 'Warning', 'Info', 'Light', 'Dark'];
+
 watch(isOpen, (newValue) => {
     if (newValue) {
         getLabels();
@@ -18,29 +26,70 @@ watch(isOpen, (newValue) => {
 
 const getLabels = async () => {
     try {
-        const response = await axios.get("http://localhost:3000/api/labels");
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            toast.error("Vous devez être authentifié.");
+            return;
+        }
+        const response = await axios.get("http://127.0.0.1:5000/api/labels", {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
         labels.value = response.data;
     } catch (error) {
+        console.error("Erreur lors du chargement des labels :", error);
         toast.error("Impossible de charger les labels. Veuillez réessayer plus tard.");
     }
 };
 
-const addLabel = async (label) => {
+const addLabel = async () => {
+    if (!newLabel.value.title.trim()) {
+        toast.error("Le titre du label est requis.");
+        return;
+    }
     try {
-        await axios.post("http://localhost:3000/api/labels", { label });
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            toast.error("Vous devez être authentifié.");
+            return;
+        }
+        const payload = {
+            title: newLabel.value.title,
+            color: newLabel.value.color.toLowerCase(),
+            id: newLabel.value.id
+        };
+        await axios.post("http://127.0.0.1:5000/api/labels", payload, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
         toast.success("Label ajouté avec succès !");
+        newLabel.value.title = '';
+        newLabel.value.color = 'Primary';
+        newLabel.value.id = '';
+        isCreatingLabel.value = false;
         await getLabels();
     } catch (error) {
+        console.error("Erreur lors de l'ajout du label :", error);
         toast.error("Erreur lors de l'ajout du label. Veuillez réessayer.");
     }
 };
 
 const deleteLabel = async (labelId) => {
     try {
-        await axios.delete(`http://localhost:3000/api/labels/${labelId}`);
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            toast.error("Vous devez être authentifié.");
+            return;
+        }
+        await axios.delete(`http://127.0.0.1:5000/api/labels/${labelId}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
         toast.success("Label supprimé avec succès !");
         await getLabels();
     } catch (error) {
+        console.error("Erreur lors de la suppression du label :", error);
         toast.error("Erreur lors de la suppression du label. Veuillez réessayer.");
     }
 };
@@ -64,8 +113,32 @@ const deleteLabel = async (labelId) => {
                 </div>
                 <button type="button" class="btn-close" aria-label="Close" @click="isOpen = false"></button>
             </div>
+            <div v-if="isCreatingLabel" class="card-header d-flex justify-content-between align-items-center">
+                <form @submit.prevent="addLabel">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Nom du label" v-model="newLabel.title">
+                        <select v-model="newLabel.color" class="form-select" style="max-width: 120px;">
+                            <option v-for="color in colors" :key="color" :value="color">{{ color }}</option>
+                        </select>
+                        <input v-model="newLabel.id" type="number">
+                        <button type="submit" class="btn btn-success">
+                            <font-awesome-icon :icon="faPlus" />
+                        </button>
+                    </div>
+                    
+                </form>
+            </div>
             <div class="card-body">
-                <div v-if="labels.length > 0"></div>
+                <div v-if="labels.length > 0">
+                    <ul class="list-group">
+                        <li v-for="label in labels" :key="label.id" class="list-group-item d-flex justify-content-between align-items-center">
+                            <span :class="`badge text-bg-${label.color.toLowerCase()}`">{{ label.title }}</span>
+                            <button type="button" class="btn btn-danger btn-sm btn-square-icon" @click="deleteLabel(label.id)">
+                                <font-awesome-icon :icon="faClose" />
+                            </button>
+                        </li>
+                    </ul>
+                </div>
                 <div v-else> Aucun Labels n'est disponible</div>
             </div>
         </div>
