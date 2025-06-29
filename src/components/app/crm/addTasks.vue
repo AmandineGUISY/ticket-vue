@@ -53,7 +53,6 @@ const closeForm = () => {
     emit('update:isOpen', false);
     newTask.value.title = '';
     newTask.value.description = '';
-    newTask.value.created_at = '';
 };
 
 const addTask = async () => {
@@ -62,33 +61,35 @@ const addTask = async () => {
         return;
     }
 
-    newTask.value.description = newTask.value.description.trim() || '';
-    newTask.value.created_at = new Date().toISOString();
-    newTask.value.id = crypto.randomUUID();
-
     const taskData = {
         title: newTask.value.title,
         labels: [],
-        description: newTask.value.description,
+        description: newTask.value.description.trim(),
+        etat: "CREATED"
     };
 
-    // try {
-    //     reponse = await axios.post('/api/tasks/create_task', taskData, {
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //         }, 
-    //     });
-    //     emit('task-added', { ...newTask.value });
-    //     toast.success('Tâche ajoutée avec succès !');
-    //     closeForm();
-    // } catch (error) {
-    //     toast.error('Erreur lors de l\'ajout de la tâche. Veuillez réessayer.');
-    //     return;
-    // }
-
-    emit('task-added', { ...newTask.value });
-    toast.success('Tâche ajoutée avec succès !');
-    closeForm();
+    try {
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            toast.error("Vous devez être authentifié pour ajouter une tâche.");
+            return;
+        }
+        const response = await axios.post('http://127.0.0.1:5000/api/tasks/create_task', taskData, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }, 
+        });
+        emit('task-added', response.data);
+        toast.success('Tâche ajoutée avec succès !');
+        closeForm();
+    } catch (err) {
+        console.error("Erreur lors de l'ajout de la tâche :", err);
+        let errorMessage = "Problème lors de l'ajout d'une tâche";
+        if (axios.isAxiosError(err) && err.response) {
+            errorMessage = err.response.data?.detail || err.response.data?.message || `Erreur: ${err.response.statusText} (${err.response.status})`;
+        }
+        toast.error(errorMessage);
+    }
 };
 </script>
 
