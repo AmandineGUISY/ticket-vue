@@ -11,6 +11,12 @@
                     <label for="taskTitle" class="form-label">Titre de la tâche</label>
                     <input type="text" v-model="newTask.title" id="taskTitle" class="form-control" required />
                 </div>
+                <div class="mb-3 d-flex gap-2">
+                    <label for="taskLabels" class="form-label">Status</label>
+                    <select v-model="newTask.etat" id="taskEtat" required>
+                        <option v-for="etat in etats" :key="etat.key" :value="etat.value" class="form-select">{{ etat.name }}</option>
+                    </select>
+                </div>
                 <div class="mb-3">
                     <label for="taskDescription" class="form-label">Description</label>
                     <textarea v-model="newTask.description" id="taskDescription" class="form-control"></textarea>
@@ -45,14 +51,22 @@ const newTask = ref({
     title: '',
     description: '',
     created_at: '',
-    status: 'Pending',
+    etat: '',
     id: ''
 });
+
+const etats=[
+    { name: 'Créé', value: 'CREATED' },
+    { name: 'En cours', value: 'PENDING' },
+    { name: 'Complété', value: 'COMPLETED' },
+    { name: 'Abandonné', value: 'ABANDONNED' }    
+]
 
 const closeForm = () => {
     emit('update:isOpen', false);
     newTask.value.title = '';
     newTask.value.description = '';
+    newTask.value.etat = 'CREATED';
 };
 
 const addTask = async () => {
@@ -65,7 +79,7 @@ const addTask = async () => {
         title: newTask.value.title,
         labels: [],
         description: newTask.value.description.trim(),
-        etat: "CREATED"
+        etat: newTask.value.etat
     };
 
     try {

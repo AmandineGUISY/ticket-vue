@@ -18,7 +18,7 @@ const error = ref(null);
 const isOpen = ref(false);
 const showDescription = ref(false);
 const currentTaskDescription = ref('');
-const idDescription = ref('');
+const idDescription = ref('')
 
 onMounted(async () => {
     const token = localStorage.getItem('access_token');
