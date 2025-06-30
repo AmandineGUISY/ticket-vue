@@ -104,8 +104,10 @@ const deleteTask = async (id) => {
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div class="gap-2 d-flex">
                                             <span>{{ task.title }}</span>
-                                            <span v-if="task.status === 'Pending'" class="badge bg-warning">En cours</span> 
-                                            <span v-else-if="task.status === 'Completed'" class="badge bg-success">Complété</span>
+                                            <span v-if="task.etat === 'PENDING'" class="badge bg-warning">En cours</span> 
+                                            <span v-else-if="task.etat === 'CREATED'" class="badge bg-primary">Créé</span>
+                                            <span v-else-if="task.etat === 'COMPLETED'" class="badge bg-success">Complété</span>
+                                            <span v-else-if="task.etat === 'ABANDONNED'" class="badge bg-danger">Abandonné</span>
                                         </div>
                                         
                                         <div class="gap-2 d-flex"> 
