@@ -20,6 +20,7 @@ const isUpdating = ref(false);
 const showDescription = ref(false);
 const idDescription = ref('');
 const currentTaskDescription = ref('');
+const taskToUpdate = ref(null);
 
 onMounted(async () => {
     getTasks();
@@ -56,6 +57,11 @@ const openDescriptionModal = (description, idTask) => {
     currentTaskDescription.value = description;
     showDescription.value = !showDescription.value;
     idDescription.value = idTask;
+};
+
+const openUpdateModal = (task) => {
+    taskToUpdate.value = task;
+    isUpdating.value = true;
 };
 
 const deleteTask = async (id) => {
@@ -111,8 +117,8 @@ const formatDate = (dateString) => {
                                 <button class="btn btn-success" @click="isOpen = true">+ Ajouter une tâche</button>
                             </div>
                         </div>
-                        <AddTasks v-model:is-open="isOpen" @task-added="handleTask" />
-                        <updateTasks v-model:is-open="isUpdating" @task-updated="handleTask" />
+                        <AddTasks v-model:isOpen="isOpen" @task-added="handleTask" />
+                        <updateTasks v-model:isUpdating="isUpdating" :task-to-update="taskToUpdate" @task-updated="handleTask" />
 
                         <div class="card-body">
                             <div v-if="isLoading" class="text-center">
@@ -134,7 +140,7 @@ const formatDate = (dateString) => {
                                         
                                         <div class="gap-2 d-flex"> 
                                             <button v-if="task.description" class="btn btn-outline-primary btn-sm mt-2" @click="openDescriptionModal( task.description, task.id )"> <font-awesome-icon :icon="faEye" /></button>
-                                            <button class="btn btn-outline-warning btn-sm mt-2" @click=""><font-awesome-icon :icon="faPenToSquare" /></button>
+                                            <button class="btn btn-outline-warning btn-sm mt-2" @click="openUpdateModal(task)"><font-awesome-icon :icon="faPenToSquare" /></button>
                                             <button class="btn btn-outline-danger btn-sm mt-2" @click="deleteTask(task.id)"><font-awesome-icon :icon="faTrash" /></button>
                                         </div>
                                     </div>

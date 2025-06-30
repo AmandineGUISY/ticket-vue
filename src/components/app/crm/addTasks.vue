@@ -4,13 +4,13 @@ import { ref, defineProps, defineEmits } from 'vue';
 import { useToast } from 'vue-toastification';
 
 const props = defineProps({
-    isUpdating: {
+    isOpen: {
         type: Boolean,
         default: false
     }
 });
 
-const emit = defineEmits(['update:isUpdating', 'task-added']);
+const emit = defineEmits(['update:isOpen', 'task-added']);
 
 const toast = useToast();
 const newTask = ref({
@@ -28,7 +28,7 @@ const etats= [
 ]
 
 const closeForm = () => {
-    emit('update:isUpdating', false);
+    emit('update:isOpen', false);
 };
 
 const addTask = async () => {
@@ -71,7 +71,7 @@ const addTask = async () => {
 </script>
 
 <template>
-<div v-if="props.isUpdating" class="form-backdrop">
+<div v-if="props.isOpen" class="form-backdrop">
     <div class="card fixed-form-container">
         <div class="card-body">
             <form @submit.prevent="addTask" class="mb-3">

@@ -1,29 +1,42 @@
 <script setup>
     import axios from 'axios';
-    import { ref, defineProps, defineEmits } from 'vue';
+    import { ref, defineProps, defineEmits, watch } from 'vue';
     import { useToast } from 'vue-toastification';
 
     const props = defineProps({
-        isOpen: {
+        isUpdating: {
             type: Boolean,
             default: false
         },
-        idTask: {
-            type: String,
-            default: ''
+        taskToUpdate: {
+            type: Object,
+            default: null
         }
     });
 
-    const emit = defineEmits(['update:isOpen','task-modified']);
+    const emit = defineEmits(['update:isUpdating','task-updated']);
 
     const toast = useToast();
+
     const newTask = ref({
         title: '',
-        description: '',
-        created_at: '',
-        etat: '',
+        description:  '',
+        labels: [],
+        etat: 'CREATED',
         id: ''
     });
+
+    watch(() => props.taskToUpdate, (task) => {
+        if (task) {
+            newTask.value = {
+                title: task.title,
+                description: task.description,
+                labels: task.labels,
+                etat: task.etat,
+                id: task.id
+            };
+        }
+    }, { immediate: true });
 
     const etats= [
         { name: 'Créé', value: 'CREATED' },
@@ -33,37 +46,33 @@
     ]
 
     const closeForm = () => {
-        emit('update:isOpen', false);
-        newTask.value.title = '';
-        newTask.value.description = '';
-        newTask.value.etat = 'CREATED';
+        emit('update:isUpdating', false);
     };
 
-    const addTask = async () => {
+    const updateTask = async () => {
         if (newTask.value.title.trim() === '') {
             toast.error('Le titre de la tâche est requis.');
             return;
         }
 
         const taskData = {
-            title: newTask.value.title,
+            description: newTask.value.description.trim() || "",
             labels: [],
-            description: newTask.value.description.trim(),
-            etat: newTask.value.etat
+            title: newTask.value.title || "",
+            etat: newTask.value.etat || "CREATED"
         };
 
+        console.log("test" + newTask.id)
         try {
             const token = localStorage.getItem('access_token');
             if (!token) {
                 toast.error("Vous devez être authentifié pour ajouter une tâche.");
                 return;
             }
-            const response = await axios.post('http://127.0.0.1:5000/api/tasks/create_task', taskData, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }, 
+            await axios.patch(`http://127.0.0.1:5000/api/tasks/${newTask.value.id}`, taskData, {
+                headers: { 'Authorization': `Bearer ${token}` }
             });
-            emit('task-added', response.data);
+            emit('task-updated');
             toast.success('Tâche ajoutée avec succès !');
             closeForm();
         } catch (err) {
@@ -78,13 +87,13 @@
 </script>
 
 <template>
-    <div v-if="props.isOpen" class="form-backdrop">
+    <div v-if="props.isUpdating" class="form-backdrop">
         <div class="card fixed-form-container">
             <div class="card-body">
-                <form @submit.prevent="addTask" class="mb-3">
+                <form @submit.prevent="task-updated" class="mb-3">
                     <div class="mb-3">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h3>Ajouter une tâche</h3>
+                            <h3>Modifier une tâche</h3>
                             <button type="button" class="btn-close" aria-label="Close" @click="closeForm"></button>
                         </div>
                         <label for="taskTitle" class="form-label">Titre de la tâche</label>
@@ -101,7 +110,7 @@
                         <textarea v-model="newTask.description" id="taskDescription" class="form-control"></textarea>
                     </div>
                     <div class="d-flex justify-content-end gap-2">
-                        <button type="submit" class="btn btn-primary">Ajouter</button>
+                        <button type="submit" class="btn btn-primary" @click="updateTask">Modifier</button>
                         <button type="button" class="btn btn-danger" @click="closeForm">Annuler</button>
                     </div>
                 </form>
