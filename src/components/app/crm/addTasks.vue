@@ -4,24 +4,23 @@ import { ref, defineProps, defineEmits } from 'vue';
 import { useToast } from 'vue-toastification';
 
 const props = defineProps({
-    isOpen: {
+    isUpdating: {
         type: Boolean,
         default: false
     }
 });
 
-const emit = defineEmits(['update:isOpen', 'task-added']);
+const emit = defineEmits(['update:isUpdating', 'task-added']);
 
 const toast = useToast();
 const newTask = ref({
     title: '',
     description: '',
-    created_at: '',
-    etat: '',
+    etat: 'CREATED',
     id: ''
 });
 
-const etats=[
+const etats= [
     { name: 'Créé', value: 'CREATED' },
     { name: 'En cours', value: 'PENDING' },
     { name: 'Complété', value: 'COMPLETED' },
@@ -29,10 +28,7 @@ const etats=[
 ]
 
 const closeForm = () => {
-    emit('update:isOpen', false);
-    newTask.value.title = '';
-    newTask.value.description = '';
-    newTask.value.etat = 'CREATED';
+    emit('update:isUpdating', false);
 };
 
 const addTask = async () => {
@@ -43,23 +39,24 @@ const addTask = async () => {
 
     const taskData = {
         title: newTask.value.title,
-        labels: [],
         description: newTask.value.description.trim(),
         etat: newTask.value.etat
     };
 
     try {
         const token = localStorage.getItem('access_token');
+
         if (!token) {
             toast.error("Vous devez être authentifié pour ajouter une tâche.");
             return;
         }
-        const response = await axios.post('http://127.0.0.1:5000/api/tasks/create_task', taskData, {
+
+        await axios.post('http://127.0.0.1:5000/api/tasks/create_task', taskData, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }, 
         });
-        emit('task-added', response.data);
+        emit('task-added');
         toast.success('Tâche ajoutée avec succès !');
         closeForm();
     } catch (err) {
@@ -74,7 +71,7 @@ const addTask = async () => {
 </script>
 
 <template>
-<div v-if="props.isOpen" class="form-backdrop AddTasks">
+<div v-if="props.isUpdating" class="form-backdrop">
     <div class="card fixed-form-container">
         <div class="card-body">
             <form @submit.prevent="addTask" class="mb-3">

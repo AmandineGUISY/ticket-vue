@@ -12,15 +12,20 @@ import handleLabels from '@/components/app/crm/labels/handleLabels.vue';
 
 const router = useRouter();
 const toast = useToast();
-const tasks = ref([]);
 const isLoading = ref(false);
 const error = ref(null);
+const tasks = ref([]);
 const isOpen = ref(false);
+const isUpdating = ref(false);
 const showDescription = ref(false);
+const idDescription = ref('');
 const currentTaskDescription = ref('');
-const idDescription = ref('')
 
 onMounted(async () => {
+    getTasks();
+})
+
+const getTasks = async () => {
     const token = localStorage.getItem('access_token');
     if (!token) {
         router.push('/login');
@@ -41,11 +46,10 @@ onMounted(async () => {
     } finally {
         isLoading.value = false;
     }
+};
 
-})
-
-const handleTaskAdded = (addedTask) => {
-    tasks.value.push(addedTask);
+const handleTask = () => {
+    getTasks();
 };
 
 const openDescriptionModal = (description, idTask) => {
@@ -75,6 +79,23 @@ const deleteTask = async (id) => {
     }
 };
 
+const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+
+    if (isNaN(date.getTime())) {
+        return 'Date invalide';
+    }
+
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    return `${day}/${month}/${year} à ${hours}:${minutes}`;
+};
+
 </script>
 
 <template>
@@ -90,7 +111,8 @@ const deleteTask = async (id) => {
                                 <button class="btn btn-success" @click="isOpen = true">+ Ajouter une tâche</button>
                             </div>
                         </div>
-                        <AddTasks v-model:is-open="isOpen" @task-added="handleTaskAdded" />
+                        <AddTasks v-model:is-open="isOpen" @task-added="handleTask" />
+                        <updateTasks v-model:is-open="isUpdating" @task-updated="handleTask" />
 
                         <div class="card-body">
                             <div v-if="isLoading" class="text-center">
@@ -116,7 +138,7 @@ const deleteTask = async (id) => {
                                             <button class="btn btn-outline-danger btn-sm mt-2" @click="deleteTask(task.id)"><font-awesome-icon :icon="faTrash" /></button>
                                         </div>
                                     </div>
-                                    <small class="text-muted">Créé le {{ new Date(task.created_at).toLocaleDateString() }}</small>
+                                    <small class="text-muted">Créé le {{ formatDate(task.date) }}</small>
                                     <div>
                                         <hr v-if="showDescription && task.id === idDescription" class="x-divider my-3">
                                         <ShowDescription v-if="task.id === idDescription" v-model:show-description="showDescription" :description-task="currentTaskDescription" />
