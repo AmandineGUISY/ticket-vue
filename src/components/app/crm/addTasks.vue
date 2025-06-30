@@ -1,37 +1,3 @@
-<template>
-<div v-if="props.isOpen" class="form-backdrop AddTasks">
-    <div class="card fixed-form-container">
-        <div class="card-body">
-            <form @submit.prevent="addTask" class="mb-3">
-                <div class="mb-3">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h3>Ajouter une tâche</h3>
-                        <button type="button" class="btn-close" aria-label="Close" @click="closeForm"></button>
-                    </div>
-                    <label for="taskTitle" class="form-label">Titre de la tâche</label>
-                    <input type="text" v-model="newTask.title" id="taskTitle" class="form-control" required />
-                </div>
-                <div class="mb-3 d-flex gap-2">
-                    <label for="taskLabels" class="form-label">Status</label>
-                    <select v-model="newTask.etat" id="taskEtat" required>
-                        <option v-for="etat in etats" :key="etat.key" :value="etat.value" class="form-select">{{ etat.name }}</option>
-                    </select>
-                </div>
-                <div class="mb-3">
-                    <label for="taskDescription" class="form-label">Description</label>
-                    <textarea v-model="newTask.description" id="taskDescription" class="form-control"></textarea>
-                </div>
-                <div class="d-flex justify-content-end gap-2">
-                    <button type="submit" class="btn btn-primary">Ajouter</button>
-                    <button type="button" class="btn btn-danger" @click="closeForm">Annuler</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-</template>
-
-.
 <script setup>
 import axios from 'axios';
 import { ref, defineProps, defineEmits } from 'vue';
@@ -106,6 +72,39 @@ const addTask = async () => {
     }
 };
 </script>
+
+<template>
+<div v-if="props.isOpen" class="form-backdrop AddTasks">
+    <div class="card fixed-form-container">
+        <div class="card-body">
+            <form @submit.prevent="addTask" class="mb-3">
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3>Ajouter une tâche</h3>
+                        <button type="button" class="btn-close" aria-label="Close" @click="closeForm"></button>
+                    </div>
+                    <label for="taskTitle" class="form-label">Titre de la tâche</label>
+                    <input type="text" v-model="newTask.title" id="taskTitle" class="form-control" required />
+                </div>
+                <div class="mb-3 d-flex gap-2">
+                    <label for="taskLabels" class="form-label">Status</label>
+                    <select v-model="newTask.etat" id="taskEtat" required>
+                        <option v-for="etat in etats" :key="etat.key" :value="etat.value" class="form-select">{{ etat.name }}</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="taskDescription" class="form-label">Description</label>
+                    <textarea v-model="newTask.description" id="taskDescription" class="form-control"></textarea>
+                </div>
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="submit" class="btn btn-primary">Ajouter</button>
+                    <button type="button" class="btn btn-danger" @click="closeForm">Annuler</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</template>
 
 <style scoped>
 .form-backdrop {
