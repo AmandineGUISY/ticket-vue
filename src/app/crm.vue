@@ -3,12 +3,13 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faEye, faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faPenToSquare, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons';
 import axios from 'axios';
 import AddTasks from '../components/app/crm/addTasks.vue';
 import ShowDescription from '../components/app/crm/showDescription.vue';
 import updateTasks from '@/components/app/crm/updateTasks.vue';
 import handleLabels from '@/components/app/crm/labels/handleLabels.vue';
+import addLabels from '@/components/app/crm/labels/addLabels.vue';
 
 const router = useRouter();
 const toast = useToast();
@@ -21,6 +22,9 @@ const showDescription = ref(false);
 const idDescription = ref('');
 const currentTaskDescription = ref('');
 const taskToUpdate = ref(null);
+const isAddingLabels = ref(false);
+const taskToAddLabels = ref(null);
+
 
 onMounted(async () => {
     getTasks();
@@ -102,6 +106,11 @@ const formatDate = (dateString) => {
     return `${day}/${month}/${year} à ${hours}:${minutes}`;
 };
 
+const addLabel = (task) => {
+    taskToAddLabels.value = task;
+    isAddingLabels.value = true;
+}
+
 </script>
 
 <template>
@@ -119,6 +128,7 @@ const formatDate = (dateString) => {
                         </div>
                         <AddTasks v-model:isOpen="isOpen" @task-added="handleTask" />
                         <updateTasks v-model:isUpdating="isUpdating" :task-to-update="taskToUpdate" @task-updated="handleTask" />
+                        <addLabels v-model:isAddingLabels="isAddingLabels" :taskToAddLabels="taskToAddLabels" @task-updated="handleTask" />
 
                         <div class="card-body">
                             <div v-if="isLoading" class="text-center">
@@ -145,8 +155,8 @@ const formatDate = (dateString) => {
                                         </div>
                                     </div>
                                     <small class="text-muted">Créé le {{ formatDate(task.date)  }}</small>
-                                    <div class="mt-1">
-                                        <button class="btn btn-sm btn-success"></button>
+                                    <div class="my-2">
+                                        <button class="btn btn-success btn-add-label" @click="addLabel(task)"> <font-awesome-icon :icon="faPlus" /> </button>
                                         <span
                                             v-for="label in task.labels"
                                             :key="label.id"
@@ -194,6 +204,15 @@ const formatDate = (dateString) => {
 .card {
     border: none;
     min-height: 300px;
+}
+
+.btn-add-label {
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 </style>

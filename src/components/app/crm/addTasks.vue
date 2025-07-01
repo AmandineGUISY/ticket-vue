@@ -28,6 +28,8 @@ const etats= [
 
 const closeForm = () => {
     emit('update:isOpen', false);
+    newTask.value.title = "";
+    newTask.value.description = "";
 };
 
 const addTask = async () => {
