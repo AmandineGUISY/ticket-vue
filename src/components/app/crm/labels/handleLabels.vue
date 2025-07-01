@@ -13,7 +13,6 @@ const isCreatingLabel = ref(false);
 const newLabel = ref({
     title: '',
     color: '',
-    id: ''
 });
 
 const colors = [
@@ -66,7 +65,6 @@ const addLabel = async () => {
         const payload = {
             title: newLabel.value.title,
             color: newLabel.value.color.toLowerCase(),
-            id: newLabel.value.id
         };
         await axios.post("http://127.0.0.1:5000/api/labels", payload, {
             headers: {
@@ -129,7 +127,6 @@ const deleteLabel = async (labelId) => {
                         <select v-model="newLabel.color" class="form-select" style="max-width: 120px;">
                             <option v-for="color in colors" :key="color.value" :value="color.value">{{ color.name }}</option>
                         </select>
-                        <input v-model="newLabel.id" type="number">
                         <button type="submit" class="btn btn-success">
                             <font-awesome-icon :icon="faPlus" />
                         </button>

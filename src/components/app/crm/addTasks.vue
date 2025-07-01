@@ -17,7 +17,6 @@ const newTask = ref({
     title: '',
     description: '',
     etat: 'CREATED',
-    id: ''
 });
 
 const etats= [
@@ -40,7 +39,7 @@ const addTask = async () => {
     const taskData = {
         title: newTask.value.title,
         description: newTask.value.description.trim(),
-        etat: newTask.value.etat
+        etat: "CREATED"// newTask.value.etat 
     };
 
     try {
@@ -83,12 +82,12 @@ const addTask = async () => {
                     <label for="taskTitle" class="form-label">Titre de la tâche</label>
                     <input type="text" v-model="newTask.title" id="taskTitle" class="form-control" required />
                 </div>
-                <div class="mb-3 d-flex gap-2">
+                <!-- <div class="mb-3 d-flex gap-2">
                     <label for="taskLabels" class="form-label">Status</label>
                     <select v-model="newTask.etat" id="taskEtat" required>
                         <option v-for="etat in etats" :key="etat.key" :value="etat.value" class="form-select">{{ etat.name }}</option>
                     </select>
-                </div>
+                </div> -->
                 <div class="mb-3">
                     <label for="taskDescription" class="form-label">Description</label>
                     <textarea v-model="newTask.description" id="taskDescription" class="form-control"></textarea>

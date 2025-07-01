@@ -144,7 +144,17 @@ const formatDate = (dateString) => {
                                             <button class="btn btn-outline-danger btn-sm mt-2" @click="deleteTask(task.id)"><font-awesome-icon :icon="faTrash" /></button>
                                         </div>
                                     </div>
-                                    <small class="text-muted">Créé le {{ formatDate(task.date) }}</small>
+                                    <small class="text-muted">Créé le {{ formatDate(task.date)  }}</small>
+                                    <div class="mt-1">
+                                        <button class="btn btn-sm btn-success"></button>
+                                        <span
+                                            v-for="label in task.labels"
+                                            :key="label.id"
+                                            :class="`badge me-1 bg-${label.color.toLowerCase()}`"
+                                        >
+                                            {{ label.title }}
+                                        </span>
+                                    </div>
                                     <div>
                                         <hr v-if="showDescription && task.id === idDescription" class="x-divider my-3">
                                         <ShowDescription v-if="task.id === idDescription" v-model:show-description="showDescription" :description-task="currentTaskDescription" />
