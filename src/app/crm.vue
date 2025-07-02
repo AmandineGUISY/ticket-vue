@@ -58,9 +58,11 @@ const handleTask = () => {
 };
 
 const openDescriptionModal = (description, idTask) => {
-    currentTaskDescription.value = description;
-    showDescription.value = !showDescription.value;
+    
+    if (showDescription.value == true && idDescription.value == idTask) {showDescription.value = false;}
+    else {showDescription.value = true;}
     idDescription.value = idTask;
+    currentTaskDescription.value = description;
 };
 
 const openUpdateModal = (task) => {
