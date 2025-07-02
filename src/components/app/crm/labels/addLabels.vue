@@ -30,7 +30,6 @@ watch(() => props.taskToAddLabels, (task) => {
     }
 }, { immediate: true });
 
-
 const closeForm = () => {
     emit('update:isAddingLabels', false);
     emit('task-updated');

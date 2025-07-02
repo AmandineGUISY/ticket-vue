@@ -121,13 +121,14 @@ const addLabel = (task) => {
             <div class="row justify-content-center">
                 <div class="col-10 col-md-8">
                     <div class="card mt-5">
-                        <div class="tasks card-header bg-dark text-white p-3 d-flex justify-content-between align-items-center">
-                            <h1 class="mb-0">Liste des Tâches</h1>
-                            <div class="d-flex gap-3">
+                        <div class="tasks card-header bg-dark text-white p-3 d-flex justify-content-between align-items-center flex-wrap">
+                            <h1 class="mb-2 mb-md-0 fs-4">Liste des Tâches</h1>
+                            <div class="d-flex flex-wrap gap-2 justify-content-end">
                                 <handleLabels @label-added="handleTask" />
                                 <button class="btn btn-success" @click="isOpen = true">+ Ajouter une tâche</button>
                             </div>
                         </div>
+
                         <AddTasks v-model:isOpen="isOpen" @task-added="handleTask" />
                         <updateTasks v-model:isUpdating="isUpdating" :task-to-update="taskToUpdate" @task-updated="handleTask" />
                         <addLabels v-model:isAddingLabels="isAddingLabels" :taskToAddLabels="taskToAddLabels" @task-updated="handleTask" />
@@ -142,7 +143,7 @@ const addLabel = (task) => {
                             <ul class="list-group">
                                 <li v-for="task in tasks" :key="task.id" class="list-group-item">
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <div class="gap-2 d-flex">
+                                        <div class="gap-2 d-flex flex-wrap justify-content-start mt-2 mt-md-0">
                                             <span>{{ task.title }}</span>
                                             <span v-if="task.etat === 'PENDING'" class="badge bg-warning">En cours</span> 
                                             <span v-else-if="task.etat === 'CREATED'" class="badge bg-primary">Créé</span>
@@ -157,7 +158,7 @@ const addLabel = (task) => {
                                         </div>
                                     </div>
                                     <small class="text-muted">Créé le {{ formatDate(task.date)  }}</small>
-                                    <div class="my-2 d-flex flex-row gap-2">
+                                    <div class="my-2 d-flex flex-wrap gap-2 align-items-center">
                                         <button class="btn btn-success btn-add-label" @click="addLabel(task)"> <font-awesome-icon :icon="faPlus" /> </button>
                                         <span
                                             v-for="label in task.labels"
