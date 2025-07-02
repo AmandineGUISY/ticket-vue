@@ -15,8 +15,8 @@
     });
 
     const emit = defineEmits(['update:isUpdating','task-updated']);
-
     const toast = useToast();
+    const byDefault = ref();
 
     const newTask = ref({
         title: '',
@@ -28,13 +28,14 @@
 
     watch(() => props.taskToUpdate, (task) => {
         if (task) {
-            newTask.value = {
+            byDefault.value = {
                 title: task.title,
                 description: task.description,
                 labels: task.labels,
                 etat: task.etat,
                 id: task.id
             };
+            newTask.value = {... byDefault.value};
         }
     }, { immediate: true });
 
@@ -46,6 +47,7 @@
     ]
 
     const closeForm = () => {
+        newTask.value = {... byDefault.value};
         emit('update:isUpdating', false);
     };
 
@@ -62,7 +64,6 @@
             etat: newTask.value.etat || "CREATED"
         };
 
-        console.log("test" + newTask.id)
         try {
             const token = localStorage.getItem('access_token');
             if (!token) {

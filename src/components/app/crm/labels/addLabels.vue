@@ -18,15 +18,14 @@ const props = defineProps({
 
 const emit = defineEmits(['update:isAddingLabels', 'taskToAddLabels']);
 const toast = useToast();
-const newLabels = ref({labels: []});
+const currentLabels = ref([]);
 const labels = ref([]);
+const taskId = ref();
 
 watch(() => props.taskToAddLabels, (task) => {
     if (task) {
-        newLabels.value = {
-            labels: task.labels,
-            id: task.id
-        };
+        currentLabels.value = task.labels;
+        taskId.value = task.id;
         getLabels();
     }
 }, { immediate: true });
@@ -55,26 +54,68 @@ const getLabels = async () => {
     }
 };
 
+const addLabelsToTask = async (label) => {
+    try  {
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            toast.error("Vous devez être authentifié.");
+            return;
+        }
+        await axios.get(`http://127.0.0.1:5000/api/tasks/${taskId.value}/add_label?label_id=${label.value.id}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+    } catch {
+        console.error("Erreur lors de l'ajout du label :", error);
+        toast.error("Impossible d'ajouter des labels, veuillez réessayer plus tard.")
+    }
+}
 </script>
 
 <template>
-    <div v-if="isAddingLabels">
-        <div class="card-body">
-            <div v-if="labels.length > 0">
-                <ul class="list-group">
-                    <li v-for="label in labels" :key="label.id" class="list-group-item d-flex justify-content-between align-items-center">
-                        <span :class="`badge text-bg-${label.color.toLowerCase()}`">{{ label.title }}</span>
-                        <button type="button" class="btn btn-danger btn-sm btn-square-icon">
-                            <font-awesome-icon :icon="faClose" />
-                        </button>
-                    </li>
-                </ul>
+    <div v-if="isAddingLabels" class="form-backdrop">
+        <div class="card fixed-form-container">
+            <div class="card-header d-flex justify-content-between align-items-center mb-3">
+                <h3>Ajouter des Labels</h3>
+                <button type="button" class="btn-close" aria-label="Close" @click="closeForm()"></button>
             </div>
-            <div v-else> Aucun Labels n'est disponible</div>
+            <div class="card-body">
+                <div v-if="labels.length > 0">
+                    <ul class="list-group">
+                        <li v-for="label in labels" :key="label.id" class="list-group-item d-flex justify-content-between align-items-center">
+                            <div v-if="label"></div>
+                            <span :class="`badge text-bg-${label.color.toLowerCase()}`">{{ label.title }}</span>
+                            <button type="button" class="btn btn-danger btn-sm btn-square-icon">
+                                <font-awesome-icon :icon="faClose" />
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                <div v-else> Aucun Labels n'est disponible</div>
+            </div>
         </div>
     </div>
 </template>
 
 <style scoped>
-
+    .form-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 999;
+    }
+    .fixed-form-container {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        max-width: 500px;
+        width: 90%;
+        min-height: unset;
+    }
 </style>
