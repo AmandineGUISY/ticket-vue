@@ -10,6 +10,8 @@ const labels = ref([]);
 const isOpen = ref(false);
 const isCreatingLabel = ref(false);
 
+const emit = defineEmits(['label-added']);
+
 const newLabel = ref({
     title: '',
     color: '',
@@ -31,6 +33,11 @@ watch(isOpen, (newValue) => {
         getLabels();
     }
 });
+
+const closeForm = () => {
+    isOpen.value = false;
+    emit('label-added');
+};
 
 const getLabels = async () => {
     try {
@@ -118,7 +125,7 @@ const deleteLabel = async (labelId) => {
                         <font-awesome-icon :icon="faClose" />
                     </button>
                 </div>
-                <button type="button" class="btn-close" aria-label="Close" @click="isOpen = false"></button>
+                <button type="button" class="btn-close" aria-label="Close" @click="closeForm()"></button>
             </div>
             <div v-if="isCreatingLabel" class="card-header d-flex justify-content-between align-items-center">
                 <form @submit.prevent="addLabel">

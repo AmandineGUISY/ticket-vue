@@ -16,7 +16,7 @@ const props = defineProps({
     }
 });
 
-const emit = defineEmits(['update:isAddingLabels', 'taskToAddLabels']);
+const emit = defineEmits(['update:isAddingLabels', 'task-updated']);
 const toast = useToast();
 const currentLabels = ref([]);
 const labels = ref([]);
@@ -33,6 +33,7 @@ watch(() => props.taskToAddLabels, (task) => {
 
 const closeForm = () => {
     emit('update:isAddingLabels', false);
+    emit('task-updated');
 };
 
 const getLabels = async () => {
@@ -61,14 +62,34 @@ const addLabelsToTask = async (label) => {
             toast.error("Vous devez être authentifié.");
             return;
         }
-        await axios.get(`http://127.0.0.1:5000/api/tasks/${taskId.value}/add_label?label_id=${label.value.id}`, {
+        await axios.post(`http://127.0.0.1:5000/api/tasks/${taskId.value}/add_label?label_id=${label.id}`, null, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         });
-    } catch {
+        currentLabels.value.push(label);
+    } catch(error) {
         console.error("Erreur lors de l'ajout du label :", error);
         toast.error("Impossible d'ajouter des labels, veuillez réessayer plus tard.")
+    }
+}
+
+const removeLabelsToTask = async (label) => {
+    try  {
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            toast.error("Vous devez être authentifié.");
+            return;
+        }
+        await axios.patch(`http://127.0.0.1:5000/api/tasks/${taskId.value}/remove-label/${label.id}`, null, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        currentLabels.value = currentLabels.value.filter(l => l.id !== label.id);
+    } catch(error) {
+        console.error("Erreur lors de la suppression du label :", error);
+        toast.error("Impossible de supprimer des labels, veuillez réessayer plus tard.")
     }
 }
 </script>
@@ -84,10 +105,12 @@ const addLabelsToTask = async (label) => {
                 <div v-if="labels.length > 0">
                     <ul class="list-group">
                         <li v-for="label in labels" :key="label.id" class="list-group-item d-flex justify-content-between align-items-center">
-                            <div v-if="label"></div>
                             <span :class="`badge text-bg-${label.color.toLowerCase()}`">{{ label.title }}</span>
-                            <button type="button" class="btn btn-danger btn-sm btn-square-icon">
+                            <button v-if="currentLabels.some(current => current.id === label.id)" type="button" @click="removeLabelsToTask(label)" class="btn btn-danger btn-sm btn-square-icon">
                                 <font-awesome-icon :icon="faClose" />
+                            </button>
+                            <button v-else type="button" @click="addLabelsToTask(label)" class="btn btn-success btn-sm btn-square-icon">
+                                <font-awesome-icon :icon="faPlus" />
                             </button>
                         </li>
                     </ul>

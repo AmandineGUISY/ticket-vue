@@ -124,7 +124,7 @@ const addLabel = (task) => {
                         <div class="tasks card-header bg-dark text-white p-3 d-flex justify-content-between align-items-center">
                             <h1 class="mb-0">Liste des Tâches</h1>
                             <div class="d-flex gap-3">
-                                <handleLabels />
+                                <handleLabels @label-added="handleTask" />
                                 <button class="btn btn-success" @click="isOpen = true">+ Ajouter une tâche</button>
                             </div>
                         </div>
@@ -157,12 +157,12 @@ const addLabel = (task) => {
                                         </div>
                                     </div>
                                     <small class="text-muted">Créé le {{ formatDate(task.date)  }}</small>
-                                    <div class="my-2">
+                                    <div class="my-2 d-flex flex-row gap-2">
                                         <button class="btn btn-success btn-add-label" @click="addLabel(task)"> <font-awesome-icon :icon="faPlus" /> </button>
                                         <span
                                             v-for="label in task.labels"
                                             :key="label.id"
-                                            :class="`badge me-1 bg-${label.color.toLowerCase()}`"
+                                            :class="`badge bg-${label.color.toLowerCase()}`"
                                         >
                                             {{ label.title }}
                                         </span>
