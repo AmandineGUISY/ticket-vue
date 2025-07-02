@@ -31,7 +31,6 @@
             byDefault.value = {
                 title: task.title,
                 description: task.description,
-                labels: task.labels,
                 etat: task.etat,
                 id: task.id
             };
@@ -57,9 +56,10 @@
             return;
         }
 
+        console.log( newTask.value.labels);
+
         const taskData = {
             description: newTask.value.description.trim() || "",
-            labels: [],
             title: newTask.value.title || "",
             etat: newTask.value.etat || "CREATED"
         };
@@ -74,7 +74,7 @@
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             emit('task-updated');
-            toast.success('Tâche ajoutée avec succès !');
+            toast.success('Tâche modifié avec succès !');
             closeForm();
         } catch (err) {
             console.error("Erreur lors de l'ajout de la tâche :", err);
