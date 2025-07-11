@@ -32,13 +32,6 @@ Il propose une interface de gestion de tickets incluant l'**authentification**, 
 
 ---
 
-## 🧪 Vérification TypeScript et support `.vue`
-
-Le projet utilise `vue-tsc` pour la vérification de types.
-Dans VSCode, installe [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) pour un meilleur support de TypeScript avec les fichiers `.vue`.
-
----
-
 ## ✍️ Auteur
 
 Développé dans le cadre d’un apprentissage personnel.
