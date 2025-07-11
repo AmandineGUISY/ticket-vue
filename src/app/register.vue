@@ -43,7 +43,7 @@
         };
     
         try {
-            await axios.post("http://127.0.0.1:5000/api/auth/register", formData);
+            await axios.post("https://backend-test-amandine.onrender.com/api/auth/register", formData);
             router.push('/login');
 
         } catch (err) {

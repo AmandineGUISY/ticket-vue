@@ -46,7 +46,7 @@ const getLabels = async () => {
             toast.error("Vous devez être authentifié.");
             return;
         }
-        const response = await axios.get("http://127.0.0.1:5000/api/labels", {
+        const response = await axios.get("https://backend-test-amandine.onrender.com/api/labels", {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -73,7 +73,7 @@ const addLabel = async () => {
             title: newLabel.value.title,
             color: newLabel.value.color.toLowerCase(),
         };
-        await axios.post("http://127.0.0.1:5000/api/labels", payload, {
+        await axios.post("https://backend-test-amandine.onrender.com/api/labels", payload, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -97,7 +97,7 @@ const deleteLabel = async (labelId) => {
             toast.error("Vous devez être authentifié.");
             return;
         }
-        await axios.delete(`http://127.0.0.1:5000/api/labels/${labelId}`, {
+        await axios.delete(`https://backend-test-amandine.onrender.com/api/labels/${labelId}`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         toast.success("Label supprimé avec succès !");

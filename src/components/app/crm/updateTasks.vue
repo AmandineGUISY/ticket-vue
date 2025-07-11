@@ -70,7 +70,7 @@
                 toast.error("Vous devez être authentifié pour ajouter une tâche.");
                 return;
             }
-            await axios.patch(`http://127.0.0.1:5000/api/tasks/${newTask.value.id}`, taskData, {
+            await axios.patch(`https://backend-test-amandine.onrender.com/api/tasks/${newTask.value.id}`, taskData, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             emit('task-updated');

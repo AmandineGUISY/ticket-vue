@@ -40,7 +40,7 @@ const getTasks = async () => {
 
     try {
         isLoading.value = true;
-        const response = await axios.get("http://127.0.0.1:5000/api/tasks", {
+        const response = await axios.get("https://backend-test-amandine.onrender.com/api/tasks", {
             headers: { 
                 'Authorization': `Bearer ${token}`
             }
@@ -78,7 +78,7 @@ const deleteTask = async (id) => {
             router.push('/login');
             return;
         }
-        await axios.delete(`http://127.0.0.1:5000/api/tasks/${id}`, {
+        await axios.delete(`https://backend-test-amandine.onrender.com/api/tasks/${id}`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }

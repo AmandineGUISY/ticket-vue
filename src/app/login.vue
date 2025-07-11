@@ -22,7 +22,7 @@
         formDataAsUrlEncoded.append('password', password.value);
 
         try {
-            const response = await axios.post("http://127.0.0.1:5000/api/auth/token", formDataAsUrlEncoded, {
+            const response = await axios.post("https://backend-test-amandine.onrender.com/api/auth/token", formDataAsUrlEncoded, {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
