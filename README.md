@@ -3,7 +3,7 @@
 **vue-ticket** est un projet front-end développé avec **Vue 3** et **Vite**, conçu à des fins d'apprentissage.
 Il propose une interface de gestion de tickets incluant l'**authentification**, la **création de tickets**, ainsi que la **gestion des statuts et des labels personnalisés avec couleurs**.
 
-> ⚠️ Le back-end utilisé est privé et disponible ici : [Backend\_test\_Amandine](https://github.com/Shinshikun/Backend_test_Amandine)
+>  Le back-end utilisé est disponible ici : [Backend\_test\_Amandine](https://github.com/Shinshikun/Backend_test_Amandine)
 
 ---
 
