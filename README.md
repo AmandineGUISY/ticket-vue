@@ -27,7 +27,8 @@ Il propose une interface de gestion de tickets incluant l'**authentification**, 
 
 ---
 
-> Le site est accessible sur ## https://amandineguisy.github.io/ticket-vue/#/login
+> Le site est accessible sur : 
+## https://amandineguisy.github.io/ticket-vue/#/login
 
 ---
 
