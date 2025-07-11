@@ -27,35 +27,7 @@ Il propose une interface de gestion de tickets incluant l'**authentification**, 
 
 ---
 
-## ⚙️ Installation
-
-### Cloner le projet
-
-```bash
-git clone https://github.com/ton-utilisateur/vue-ticket.git
-cd vue-ticket
-```
-
-### Installer les dépendances
-
-```bash
-npm install
-```
-
-### Créer le build de production
-
-```bash
-npm run build
-```
-
-### Lancer le build en local (optionnel)
-
-```bash
-npm install -g serve
-serve dist
-```
-
-> Le site sera accessible sur [http://localhost:3000](http://localhost:3000)
+> Le site est accessible sur ## https://amandineguisy.github.io/ticket-vue/#/login
 
 ---
 
@@ -69,7 +41,7 @@ Dans VSCode, installe [Volar](https://marketplace.visualstudio.com/items?itemNam
 ## ✍️ Auteur
 
 Développé dans le cadre d’un apprentissage personnel.
-Back-end fourni par [Shinshikun](https://github.com/Shinshikun) (privé).
+Back-end fourni par [Shinshikun](https://github.com/Shinshikun).
 
 ---
 
