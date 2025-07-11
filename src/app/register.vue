@@ -97,7 +97,7 @@
                             </form>
                         </div>
                         <div class="card-footer text-center">
-                            <p class="mb-0">Déjà inscrit ? <a href="/login">Se connecter</a></p>
+                            <p class="mb-0">Déjà inscrit ? <router-link to="/login">Se connecter</router-link></p>
                         </div>
                     </div>
                 </div>

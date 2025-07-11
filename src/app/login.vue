@@ -86,7 +86,7 @@
                             </form>
                         </div>
                         <div class="card-footer text-center">
-                            <p class="mb-0">Pas encore inscrit ? <a href="/register">Créer un compte</a></p>
+                            <p class="mb-0">Pas encore inscrit ? <router-link to="/register">Créer un compte</router-link></p>
                         </div>
                     </div>
                 </div>
